@@ -23,7 +23,85 @@
             }
         }
 
-        console.log(computerPlay());
+        function playRound(playerSelection, computerSelection){
+            winnerFlag = declareWinner(playerSelection,computerSelection);
+            if (winnerFlag === 1){
+                return `You Win! ${playerSelection} beats ${computerSelection}`;
+            }
+            else if (winnerFlag === 0){
+                return `You Lose! ${computerSelection} beats ${playerSelection}`;
+            }
+
+            return "Draw";
+            
+        }
+
+        function declareWinner(playerSelection,computerSelection){
+            if (playerSelection === "Rock" && computerSelection === "Paper"){
+                return 0;
+            }
+            if (playerSelection === "Rock" && computerSelection === "Scissors"){
+                return 1;
+            }
+            if (playerSelection === "Paper" && computerSelection === "Rock"){
+                return 1;
+            }
+            if (playerSelection === "Paper" && computerSelection === "Scissors"){
+                return 0;
+            }
+            if (playerSelection === "Scissors" && computerSelection === "Paper"){
+                return 1;
+            }
+            if (playerSelection === "Scissors" && computerSelection === "Rock"){
+                return 0;
+            }
+            return -1;
+        }
+
+        function getPlayerChoice(){
+            let playerSelection = prompt("Pick a choice: (Rock,Paper,Scissors): ");
+            while(!checkValidChoice(playerSelection)){
+                playerSelection = prompt("Please enter one of these words: (Rock,Paper,Scissors): ");
+            }
+
+            return playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1,playerSelection.length).toLowerCase();
+        }
+
+        function checkValidChoice(playerSelection){
+            playerSelection = playerSelection.toLowerCase();
+            return true?playerSelection === "rock" || playerSelection === "paper" || playerSelection === "scissors":false;
+        }
+
+        function isPlayerWon(declareWinnerStr){
+            if (declareWinnerStr.includes("You Win")){
+                return 1;
+            }
+            else if (declareWinnerStr.includes("You Lose")){
+                return 0;
+            }
+            return -1;
+        }
+
+
+        function game(){
+            let playerScore = 0;
+            let pcScore = 0;
+            for (let i = 0;i<5;i++){
+                let computerSelection = computerPlay();
+                let playerSelection = getPlayerChoice();
+                let declareWinnerStr = playRound(playerSelection,computerSelection);
+                console.log(declareWinnerStr);
+                let playerWon = isPlayerWon(declareWinnerStr);
+                if (playerWon===1){
+                    playerScore++;
+                }
+                else if (playerWon === 0){
+                    pcScore++;
+                }
+            }
+            console.log(`player ${playerScore}:${pcScore} pc`);
+        }
+        game();
     </script>
 </body>
 </html>
