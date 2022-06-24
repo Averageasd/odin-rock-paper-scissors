@@ -8,6 +8,8 @@
 </head>
 <body>
     <script>
+
+        // computer generates a random selection.
         function computerPlay(){
             let randomChoice = Math.floor(Math.random()*3);
             switch(randomChoice){
@@ -23,6 +25,7 @@
             }
         }
 
+        // returns string that declares the winner.
         function playRound(playerSelection, computerSelection){
             winnerFlag = declareWinner(playerSelection,computerSelection);
             if (winnerFlag === 1){
@@ -36,6 +39,8 @@
             
         }
 
+        // return flag that determines who is the winner. if flag is 0, player wins.
+        // if flag is 0, pc wins. Otherwise, flag is -1 if the result is draw.
         function declareWinner(playerSelection,computerSelection){
             if (playerSelection === "Rock" && computerSelection === "Paper"){
                 return 0;
@@ -58,6 +63,7 @@
             return -1;
         }
 
+        // return player's entered selection. The first letter is capitalized.
         function getPlayerChoice(){
             let playerSelection = prompt("Pick a choice: (Rock,Paper,Scissors): ");
             while(!checkValidChoice(playerSelection)){
@@ -67,11 +73,13 @@
             return playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1,playerSelection.length).toLowerCase();
         }
 
+        // function checks if player enters the valid words: rock, paper or scissors. 
         function checkValidChoice(playerSelection){
             playerSelection = playerSelection.toLowerCase();
             return true?playerSelection === "rock" || playerSelection === "paper" || playerSelection === "scissors":false;
         }
 
+        // function that returns flag which indicates if player wins or loses.
         function isPlayerWon(declareWinnerStr){
             if (declareWinnerStr.includes("You Win")){
                 return 1;
@@ -82,7 +90,8 @@
             return -1;
         }
 
-
+        // call function playRound to play the games 5 times.
+        // Update score for pc and player. 
         function game(){
             let playerScore = 0;
             let pcScore = 0;
