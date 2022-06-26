@@ -92,25 +92,25 @@
 
         // call function playRound to play the games 5 times.
         // Update score for pc and player. 
-        function game(){
-            let playerScore = 0;
-            let pcScore = 0;
-            for (let i = 0;i<5;i++){
-                let computerSelection = computerPlay();
-                let playerSelection = getPlayerChoice();
-                let declareWinnerStr = playRound(playerSelection,computerSelection);
-                console.log(declareWinnerStr);
-                let playerWon = isPlayerWon(declareWinnerStr);
-                if (playerWon===1){
-                    playerScore++;
-                }
-                else if (playerWon === 0){
-                    pcScore++;
-                }
-            }
-            console.log(`player ${playerScore}:${pcScore} pc`);
-        }
-        game();
+        // function game(){
+        //     let playerScore = 0;
+        //     let pcScore = 0;
+        //     for (let i = 0;i<5;i++){
+        //         let computerSelection = computerPlay();
+        //         let playerSelection = getPlayerChoice();
+        //         let declareWinnerStr = playRound(playerSelection,computerSelection);
+        //         console.log(declareWinnerStr);
+        //         let playerWon = isPlayerWon(declareWinnerStr);
+        //         if (playerWon===1){
+        //             playerScore++;
+        //         }
+        //         else if (playerWon === 0){
+        //             pcScore++;
+        //         }
+        //     }
+        //     console.log(`player ${playerScore}:${pcScore} pc`);
+        // }
+        // game();
     </script>
 </body>
 </html>
