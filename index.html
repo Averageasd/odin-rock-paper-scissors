@@ -5,9 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container">
+        <div class="score-board">
+            <div id="human-score">PLAYER:</div>
+            <div id="pc-score">PC:</div>
+        </div>
+        <div class="selection-container">
+            <button id="rock-btn">Rock</button>
+            <button id="paper-btn">Paper</button>
+            <button id="scissors-btn">Scissors</button>
+        </div>
+        <div class="round-winner-tracker"></div>
+        <div class="winner-announce"></div>
+    </div>
+    
+    
+    
     <script>
+
+        let playerSelection = "";
+        let pcSelection = "";
+        let roundWinner = "";
+        let playerScore = 0;
+        let pcScore = 0;
 
         // computer generates a random selection.
         function computerPlay(){
@@ -26,16 +49,19 @@
         }
 
         // returns string that declares the winner.
-        function playRound(playerSelection, computerSelection){
-            winnerFlag = declareWinner(playerSelection,computerSelection);
+        function playRound(){
+            winnerFlag = declareWinner(playerSelection,pcSelection);
             if (winnerFlag === 1){
-                return `You Win! ${playerSelection} beats ${computerSelection}`;
+                roundWinner = `You Win! ${playerSelection} beats ${pcSelection}`;
+                playerScore++;
             }
             else if (winnerFlag === 0){
-                return `You Lose! ${computerSelection} beats ${playerSelection}`;
+                roundWinner = `You Lose! ${pcSelection} beats ${playerSelection}`;
+                pcScore++;
             }
-
-            return "Draw";
+            else{
+                roundWinner = `Draw! ${pcSelection} and ${playerSelection}`;
+            }
             
         }
 
@@ -64,53 +90,111 @@
         }
 
         // return player's entered selection. The first letter is capitalized.
-        function getPlayerChoice(){
-            let playerSelection = prompt("Pick a choice: (Rock,Paper,Scissors): ");
-            while(!checkValidChoice(playerSelection)){
-                playerSelection = prompt("Please enter one of these words: (Rock,Paper,Scissors): ");
+        function setPlayerChoice(buttonClicked){
+            switch(buttonClicked.id){
+                case "rock-btn":
+                    playerSelection = "Rock";
+                    break;
+                case "paper-btn":
+                    playerSelection = "Paper";
+                    break;
+                case "scissors-btn":
+                    playerSelection = "Scissors";
+                    break;
             }
-
-            return playerSelection.charAt(0).toUpperCase() + playerSelection.slice(1,playerSelection.length).toLowerCase();
         }
 
-        // function checks if player enters the valid words: rock, paper or scissors. 
-        function checkValidChoice(playerSelection){
-            playerSelection = playerSelection.toLowerCase();
-            return true?playerSelection === "rock" || playerSelection === "paper" || playerSelection === "scissors":false;
+        function gameOver(){
+            return playerWon() || pcWon();
+        }
+        function playerWon(){
+            return playerScore === 5;
         }
 
-        // function that returns flag which indicates if player wins or loses.
-        function isPlayerWon(declareWinnerStr){
-            if (declareWinnerStr.includes("You Win")){
-                return 1;
-            }
-            else if (declareWinnerStr.includes("You Lose")){
-                return 0;
-            }
-            return -1;
+        function pcWon(){
+            return pcScore === 5;
         }
 
-        // call function playRound to play the games 5 times.
-        // Update score for pc and player. 
-        // function game(){
-        //     let playerScore = 0;
-        //     let pcScore = 0;
-        //     for (let i = 0;i<5;i++){
-        //         let computerSelection = computerPlay();
-        //         let playerSelection = getPlayerChoice();
-        //         let declareWinnerStr = playRound(playerSelection,computerSelection);
-        //         console.log(declareWinnerStr);
-        //         let playerWon = isPlayerWon(declareWinnerStr);
-        //         if (playerWon===1){
-        //             playerScore++;
-        //         }
-        //         else if (playerWon === 0){
-        //             pcScore++;
-        //         }
-        //     }
-        //     console.log(`player ${playerScore}:${pcScore} pc`);
-        // }
-        // game();
+        const selectionButtons = document.querySelectorAll('.selection-container > button');
+        const humanScoreDiv = document.querySelector('#human-score');
+        const pcScoreDiv = document.querySelector("#pc-score");
+
+        const roundWinnerDiv = document.querySelector('.round-winner-tracker');
+        const winnerAnnounceDiv = document.querySelector('.winner-announce');
+        selectionButtons.forEach((button)=>{
+            button.addEventListener('click',()=>{
+                if (gameOver()){
+                    endGame();
+                    return;
+                }
+                setPlayerChoice(button);
+                pcSelection = computerPlay();
+                playRound();
+                updateScoreBoard();
+                if (gameOver()){
+                    endGame();
+                }
+                const resultDiv = createScoreTrackingDiv();
+                roundWinnerDiv.appendChild(resultDiv);
+
+            });
+        });
+
+        winnerAnnounceDiv.addEventListener('click',()=>{
+            if (gameOver()){
+                reset();
+            }
+        });
+
+        function updateScoreBoard(){
+            humanScoreDiv.textContent ="PLAYER:" + playerScore;
+            pcScoreDiv.textContent ="PC:" + pcScore;
+        }
+
+        function reset(){
+            playerScore = 0;
+            pcScore = 0;
+            roundWinner = "";
+            playerSelection = "";
+            pcSelection = "";
+            humanScoreDiv.textContent="PLAYER:0";
+            pcScoreDiv.textContent="PC:0";
+            winnerAnnounceDiv.textContent="";
+            removeAllChildElems(roundWinnerDiv);
+        }
+        
+        function removeAllChildElems(parent){
+            while (parent.firstChild){
+                parent.removeChild(parent.firstChild);
+            }
+        }
+
+        function createScoreTrackingDiv(){
+            let div = document.createElement('div');
+            div.classList.add('result-div');
+            const playerScoreTracker = document.createElement('div');
+            const resultTracker = document.createElement('div');
+            const pcScoreTracker = document.createElement('div');
+            playerScoreTracker.classList.add('player-score-tracker');
+            playerScoreTracker.textContent = humanScoreDiv.textContent;
+            resultTracker.classList.add('result-tracker');
+            resultTracker.textContent = roundWinner;
+            pcScoreTracker.classList.add('pc-score-tracker');
+            pcScoreTracker.textContent = pcScoreDiv.textContent;
+            div.appendChild(playerScoreTracker);
+            div.appendChild(resultTracker);
+            div.appendChild(pcScoreTracker);
+            return div;
+        }
+
+        function endGame(){
+            let finalWinner = "Player won!";
+            if (pcWon()){
+                finalWinner = "Pc won!";
+            }
+            winnerAnnounceDiv.textContent = finalWinner + ". Click here to play again!";
+        }
+            
     </script>
 </body>
 </html>
